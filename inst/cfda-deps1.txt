@@ -1,0 +1,49 @@
+nimble
+rJava
+devtools
+tidyverse
+shiny
+shinyBS
+shinydashboard
+
+plotly
+XLConnect
+data.table 
+countrycode 
+fastmatch
+keras
+caret
+nimble
+rstanarm
+glmmTMB
+R2admb
+gsl
+tidytext
+fulltext
+rhandsontable
+fitdistrplus
+aws.ec2metadata
+aws.s3
+aws.iam
+mlr
+simstudy
+rmarkdown
+knitr
+bookdown
+DiagrammeR
+gpg
+
+biocLite("GenomicRanges")
+
+devtools::install_github(dependencies=TRUE, repo = "jyypma/nloptr",    lib="${CFDA_R_LIB}")
+devtools::install_github(                         'yihui/tinytex',  lib='${CFDA_R_LIB}')
+
+devtools::install_github(                          'rstudio/pool',    lib='${CFDA_R_LIB}')
+devtools::install_github(                          'rstudio/blogdown',lib='${CFDA_R_LIB}')
+
+devtools::install_github(                          'rstudio/sparklyr',    lib='${CFDA_R_LIB}')
+library(sparklyr);options(spark.install.dir = '/usr/local/lib');spark_install(version = '2.1.0')
+
+instead on: rforge/glmmadmb in pkg subdirectory
+remotes::install_github("rforge/glmmadmb/pkg")
+install.packages('glmmADMB',  lib='${CFDA_R_LIB}', type='source', repos=c('http://glmmadmb.r-forge.r-project.org/repos', getOption('repos')))

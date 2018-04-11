@@ -1,0 +1,101 @@
+---
+title: "scratch"
+output: html_document
+---
+
+```{r}
+gen_runtime_description(
+  c("dplyr", "sparklyr (>= 0.7.0-9020)", "pool (>= 0.1.4)"),
+  github = c("rstudio/pool", "rstudio/sparklyr")
+)
+```
+
+
+```{r}
+pkgs <- c("R6", "pillar (>= 1.2.1)")
+pkg_names <- vapply(strsplit(pkgs, "\\s"), function(x) x[[1]], character(1))
+runtime_desc <- gen_runtime_description(
+  pkgs,
+  github = c("r-lib/pillar"),
+  name = "Devin Pastoor",
+  email = "devin.pastoor@gmail.com"
+)
+```
+
+```{r}
+runtime_desc$write(
+ "../tmp/DESCRIPTION"
+)
+```
+
+
+```{r}
+snapshot <- withr::with_libpaths(
+  "../tmp_lib",
+  {
+    remotes::install_deps(pkgdir = "../tmp")
+    gen_snapshot(pkg_names)
+  }
+)
+```
+
+```{r}
+writeLines(snapshot$lockfile, "runtime")
+```
+
+```{r eval = FALSE}
+# setup install requirements
+withr::with_libpaths("/Users/devin/clients/amgen/pkglock/inst/installreq",
+                     {
+                       install.packages("devtools")
+                       install.packages("packrat")
+                     }
+                     )
+```
+
+```{r}
+withr::with_libpaths("/Users/devin/clients/amgen/pkglock/inst/installreq", {
+  packrat::restore("gen-runtime")
+})
+```
+
+```{r}
+runtime_pkgs_path <- file.path("gen-runtime", "packrat", "lib", R.version$platform, getRversion())
+
+```
+
+```{r}
+list.files(runtime_pkgs_path)
+```
+
+## using package functions
+
+```{r}
+tmpdir <- fs::path_temp()
+new_snap <- install_from_desc(runtime_desc, .dir = tmpdir)
+
+rtdir <- setup_runtime_template(new_snap$snapshot$lockfile, .dir = tmpdir)
+```
+
+```{r}
+list.files(rtdir, recursive = TRUE, all.files = TRUE)
+```
+
+```{r}
+binary_runtime <- install_runtime(rtdir, "/Users/devin/clients/amgen/pkglock/inst/installreq")
+```
+
+
+```{r}
+list.files(binary_runtime)
+```
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+Package: pkglock
+Title: lock and rehydrate package runtimes
+Version: 0.1.0
+Authors@R: 
+    person(given = "Devin",
+           family = "Pastoor",
+           role = c("aut", "cre"),
+           email = "devin.pastoor@gmail.com")
+Description: Lock and rehydrate packages.
+LazyData: true
+Encoding: UTF-8
+Imports:  
+    withr,
+    devtools,
+    remotes,
+    desc,
+    magrittr,
+    packrat
+Suggests:
+    testthat,
+    knitr
+RoxygenNote: 6.0.1.9000
