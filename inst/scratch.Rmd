@@ -55,7 +55,7 @@ binary_runtime <- install_runtime(rtdir, "/Users/devin/clients/amgen/pkglock/ins
 
 
 ```{r}
-list.files(binary_runtime)
+fs::dir_ls(binary_runtime)
 ```
 
 
