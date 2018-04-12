@@ -12,37 +12,22 @@ gen_packrat_lockfile <- function(..., .workdir = file.path( getwd(),"work")){
   return (lockfile)
 }
 
-#' Scan a library folder and build a package list
+#' Build a string suitable for passing to gen_runtime_description
 #' @param .libdir the library directory to scan
 #' @export
-build_package_list_from_library_dir <- function(.libdir){
-  
-  pkgs <- list();
-  for( file in list.files(.libdir)){
-    version <-  packageDescription(file, lib.loc = .libdir)$Version
-    pkgs[file] <- version
-  }
-  
-  return (pkgs)
-}
-
-
-#' Build a string suitable for passing to gen_runtime_description
-#' @param .pkglist the output from build_package_list_from_library_dir
-#' @param .addversion  TRUE to lock package to version, FALSE to get latest
-#' @export
-gen_pkg_desc_from_package_list <- function(.pkglist, .addversion=FALSE){
+#' @importFrom utils installed.packages
+gen_pkg_desc_from_libdir <- function(.libdir, .addversion=FALSE){
   out <- ''
-  
-  pkgnames <- names(.pkglist)
+
+  pkglist <- utils::installed.packages(lib.loc = .libdir)
   add <- FALSE
-  for( name in pkgnames){
+  for( row in 1:nrow(pkglist)){
     out <- sprintf(
       "%s%s'%s%s'",
       out,
       if(add) ",\n\t  " else "",
-      name,
-      if(.addversion) paste0(" (==",.pkglist[name],")") else ""
+      pkglist[row,'Package'],
+      if(.addversion) paste0(" (==",pkglist[row,'Version'],")") else ""
     )
     add <- TRUE
   }
