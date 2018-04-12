@@ -41,19 +41,15 @@ gen_pkg_desc_from_libdir <- function(.libdir, .addversion=FALSE){
 #' @param .filepath the filepath to save the data to
 #' @export
 save_packrat_lockfile <- function(.packratLockFile, .filepath){
-  fileConn<-file(.filepath)
-  writeLines(.packratLockFile, fileConn)
-  close(fileConn)
+  writeLines(.packratLockFile, .filepath)
 }
 
 #' Load the Packrat Lockfile data from disk so that it can be restored
 #' @param .filepath the filepath to load the data from
 #' @export
 load_packrat_lockfile <- function(.filepath){
-  fileConn<-file(.filepath)
-  lockfile <- readLines(fileConn)
-  close(fileConn)
-  
+  lockfile <- readLines(.filepath)
+
   return (lockfile)
 }
 
