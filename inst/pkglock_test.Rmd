@@ -1,0 +1,78 @@
+---
+title: "pkglock test"
+author: "Brian Schultheiss"
+date: "April 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup installer
+
+```{r }
+
+#Setup Installer
+installerdir <- file.path( getwd(),"pkglock/inst/installreq")
+dir.create(installerdir, showWarnings = FALSE, recursive = TRUE)
+devtools::install_github("bschulth/pkglock", lib=installerdir, force=TRUE, dependencies=TRUE)  
+
+#This seems to be needed also, but is not getting pulled in by default
+install.packages("remotes", lib = installerdir)
+.libPaths( c( .libPaths(), installerdir) )
+
+#List installed packages in installerdir
+pkglock::build_package_list_from_library_dir(installerdir)
+#hmm...install_github() doesn't seem to respect lib=installerdir arg
+
+#hmm....seem to have to force load this here before calling rest of pkglock functions otherwise 
+library(remotes)
+
+```
+
+
+# Create runtime descriptor
+
+```{r }
+pkgs <- c("R6", "pillar (>= 1.2.1)")
+lockdata <- pkglock::gen_packrat_lockfile(
+              pkgs,
+              github = c("r-lib/pillar"),
+              name = "Brian Schultheiss",
+              email = "bschulth@amgen.com"
+            )
+
+#Save lockfile to disk for storing in GitLab and for later user by Dockerfile
+txtFile <- file.path( getwd(),"packrat_lockfile.txt")
+pkglock::save_packrat_lockfile( lockdata, txtFile)
+
+
+```
+
+# Install from packrat lockfile
+
+```{r }
+
+#In Dockerfile load packrat lock file
+lockfile       <- pkglock::load_packrat_lockfile(txtFile)
+rtdir          <- pkglock::setup_runtime_template(lockfile, .dir = file.path( getwd(),"work"))
+
+#Do the install
+binary_runtime <- pkglock::install_runtime(rtdir, installerdir)
+
+#Move/Copy the binary_runtime to its final cfda_runtime_home
+
+
+```
+
+
+
+# TEST STUFF......Build a descriptor from an R lib.loc
+
+```{r}
+
+pkglist <- pkglock::build_package_list_from_library_dir(.libdir = "C:/dev/apps/R/3.4.3/library")
+cat(pkglock::gen_pkg_desc_from_package_list(pkglist, TRUE))
+
+```
