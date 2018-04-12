@@ -12,7 +12,13 @@ gen_packrat_lockfile <- function(..., .workdir = file.path( getwd(),"work")){
   return (lockfile)
 }
 
-#' Build a string suitable for passing to gen_runtime_description
+#' Build a string suitable for pasting into source code for passing to gen_runtime_description
+#'     This is meant to help kickstart a new source file that will be checked into source control
+#'     so that you can have a starter list.
+#'     
+#'     Caveate: this will essentially make all installed packages top-level citizens when calling 
+#'     install.packages(dependencies=c("Depends", "Imports", "LinkingTo", "Suggests"))
+#'               
 #' @param .libdir the library directory to scan
 #' @export
 #' @importFrom utils installed.packages
