@@ -46,7 +46,7 @@ setup_runtime_template <- function(.ll, .dir = fs::path_temp()) {
 install_runtime <- function(.rt, .libs = NULL) {
   if (!is.null(.libs)) {
     withr::with_libpaths(.libs, {
-      packrat::restore(.rt)
+      packrat::restore(.rt, prompt = FALSE)
     })
   } else {
     # this is not suggested as can cause incomplete runtimes to be generated
