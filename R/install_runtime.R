@@ -5,9 +5,7 @@
 #' @export
 install_from_desc <- function(.d, .dir = fs::path_temp()) {
   # random folder so won't clash if installing multiple descs
-  working_dir <- fs::dir_create(file.path(.dir, paste0(
-    "runtime_pkg", round(runif(1, 10000, 100000), 0)))
-    )
+  working_dir <- fs::dir_create(file.path(.dir, "runtime_pkg"))
   pkg_dir <- fs::dir_create(file.path(working_dir, "runtime_pkg"))
   pkglibs <- fs::dir_create(file.path(working_dir, "pkglib"))
   .d$write(file.path(pkg_dir, "DESCRIPTION")) 
@@ -29,9 +27,8 @@ install_from_desc <- function(.d, .dir = fs::path_temp()) {
 #' @param .dir dir to create the runtime template
 #' @export
 setup_runtime_template <- function(.ll, .dir = fs::path_temp()) {
-  working_dir <- fs::dir_create(file.path(.dir, round(runif(1, 10000, 100000))))
-  runtime_template_dir <- file.path(working_dir, "gen-runtime")
-  fs::dir_copy(system.file("gen-runtime", package = "pkglock"), working_dir)
+  runtime_template_dir <- file.path(.dir, "gen-runtime")
+  fs::dir_copy(system.file("gen-runtime", package = "pkglock"), .dir)
   # these folders are required by packrat, but are empty so not included in 
   # template
   fs::dir_create(
