@@ -15,7 +15,7 @@ install_from_desc <- function(.d, .dir = fs::path_temp()) {
     pkglibs,
     {
       remotes::install_deps(pkgdir = pkg_dir)
-      gen_snapshot(.d$get_deps()$package)
+      gen_snapshot(.d$get_deps()$package, .dir=.dir)
     }
   )
   return(list(

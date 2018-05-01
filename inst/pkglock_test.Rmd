@@ -1,0 +1,74 @@
+---
+title: "pkglock test"
+author: "Brian Schultheiss"
+date: "April 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup installer
+
+```{r }
+
+#Setup Installer
+installerdir <- file.path( getwd(),"pkglock_test_install_lib")
+dir.create(installerdir, showWarnings = FALSE, recursive = TRUE)
+if (!require("withr")) install.packages("withr")
+withr::with_libpaths(
+    installerdir,
+    {
+      devtools::install_github("bschulth/pkglock@amgen_bschulth", lib=installerdir, force=TRUE, dependencies=TRUE)  
+    }
+  )
+.libPaths( c( .libPaths(), installerdir) )
+library(pkglock)
+
+```
+
+
+# Create runtime descriptor
+
+```{r }
+pkgs <- c("R6", "pillar (>= 1.2.1)")
+lockdata <- pkglock::gen_packrat_lockfile(
+              pkgs,
+              github = c("r-lib/pillar"),
+              name = "Brian Schultheiss",
+              email = "bschulth@amgen.com"
+            )
+
+#Save lockfile to disk for storing in GitLab and for later user by Dockerfile
+txtFile <- file.path( getwd(),"packrat_lockfile.txt")
+pkglock::save_packrat_lockfile( lockdata, txtFile)
+
+
+```
+
+# Install from packrat lockfile
+
+```{r }
+
+#In Dockerfile load packrat lock file
+lockfile       <- pkglock::load_packrat_lockfile(txtFile)
+rtdir          <- pkglock::setup_runtime_template(lockfile, .dir = file.path( getwd(),"work"))
+
+#Do the install
+binary_runtime <- pkglock::install_runtime(rtdir, installerdir)
+
+#Move/Copy the binary_runtime to its final cfda_runtime_home
+
+
+```
+
+
+
+# TEST STUFF......Build a descriptor from an R lib.loc
+
+```{r}
+
+cat(pkglock::gen_pkg_desc_from_libdir("C:/dev/apps/R/3.4.3/library", TRUE))
+
+```
