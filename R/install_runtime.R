@@ -25,10 +25,12 @@ install_from_desc <- function(.d, .dir = fs::path_temp()) {
 #' setup a runtime template
 #' @param .ll lockfile lines
 #' @param .dir dir to create the runtime template
+#' @param ... parameters to pass to `packrat_settings()`
 #' @export
-setup_runtime_template <- function(.ll, .dir = fs::path_temp()) {
+setup_runtime_template <- function(.ll, .dir = fs::path_temp(), ...) {
   runtime_template_dir <- file.path(.dir, "gen-runtime")
   fs::dir_copy(system.file("gen-runtime", package = "pkglock"), .dir)
+  write_packrat_opts(packrat_settings(...), fs::path(.dir, "packrat.opts"))
   # these folders are required by packrat, but are empty so not included in 
   # template
   fs::dir_create(
