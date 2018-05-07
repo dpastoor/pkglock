@@ -41,21 +41,7 @@ gen_pkg_desc_from_libdir <- function(.libdir, .addversion=FALSE){
   return (paste0("pkgs <- c(",out,")"))
 }
 
-#' Save the Packrat Lockfile data to disk so that if can be reloaded later
-#'   from say, a docker file
-#' @param .packratLockFile the output from gen_packrat_lockfile()
-#' @param .filepath the filepath to save the data to
-#' @export
-save_packrat_lockfile <- function(.packratLockFile, .filepath){
-  writeLines(.packratLockFile, .filepath)
+
+`%||%` <- function(a, b) {
+  if (!is.null(a)) a else b
 }
-
-#' Load the Packrat Lockfile data from disk so that it can be restored
-#' @param .filepath the filepath to load the data from
-#' @export
-load_packrat_lockfile <- function(.filepath){
-  lockfile <- readLines(.filepath)
-
-  return (lockfile)
-}
-
