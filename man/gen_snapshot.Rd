@@ -4,12 +4,14 @@
 \alias{gen_snapshot}
 \title{generate a lockfile from a requested set of packages}
 \usage{
-gen_snapshot(pkgs, .dir = tempdir(), snapshot_tars = FALSE)
+gen_snapshot(pkgs, .dir = tempdir(), snapshot_tars = TRUE)
 }
 \arguments{
 \item{pkgs}{packages to install}
 
-\item{snapshot_tars}{snapshot the tars}
+\item{.dir}{directory to use when generating the snapshot details}
+
+\item{snapshot_tars}{whether to snapshot the tars}
 }
 \description{
 generate a lockfile from a requested set of packages
