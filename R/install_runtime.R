@@ -30,7 +30,8 @@ install_from_desc <- function(.d, .dir = fs::path_temp()) {
 setup_runtime_template <- function(.ll, .dir = fs::path_temp(), ...) {
   runtime_template_dir <- file.path(.dir, "gen-runtime")
   fs::dir_copy(system.file("gen-runtime", package = "pkglock"), .dir)
-  write_packrat_opts(packrat_settings(...), fs::path(.dir, "packrat.opts"))
+  write_packrat_opts(packrat_settings(...), 
+                     fs::path(.dir, "gen-runtime", "packrat", "packrat.opts"))
   # these folders are required by packrat, but are empty so not included in 
   # template
   fs::dir_create(
@@ -54,7 +55,7 @@ install_runtime <- function(.rt, .libs = NULL) {
     # this is not suggested as can cause incomplete runtimes to be generated
     # by other packages already installed in other libpaths than those
     # explicitly specified
-    packrat::restore(runtime)
+    packrat::restore(.rt)
   }
   normalizePath(file.path(.rt, 
                           "packrat", 
