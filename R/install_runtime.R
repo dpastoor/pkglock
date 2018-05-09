@@ -2,20 +2,39 @@
 #' install from a runtime description
 #' @param .d description file
 #' @param .dir directory to install pkgs from description
+#' @param threads threads during install 
+#' @param .install whether to install deps
+#' @details 
+#' .install should almost always be set to true, the time to set to false
+#' is if a full install was completed, however some tweak to the snapshot
+#' generation needed to be re-run.
 #' @export
-install_from_desc <- function(.d, .dir = fs::path_temp()) {
+install_from_desc <- function(.d, 
+                              .dir = fs::path_temp(), 
+                              threads = parallel::detectCores(),
+                              .install = TRUE) {
   # random folder so won't clash if installing multiple descs
   working_dir <- fs::dir_create(file.path(.dir, "runtime_pkg"))
   pkg_dir <- fs::dir_create(file.path(working_dir, "runtime_pkg"))
   pkglibs <- fs::dir_create(file.path(working_dir, "pkglib"))
   .d$write(file.path(pkg_dir, "DESCRIPTION")) 
-  snapshot <- withr::with_libpaths(
-    pkglibs,
-    {
-      remotes::install_deps(pkgdir = pkg_dir, dependencies = TRUE)
-      gen_snapshot(.d$get_deps()$package, .dir = .dir)
-    }
-  )
+  # with_libpaths does not overwrite the site-library, hence need to be
+  # more aggresive, even if it means hard coding for the moment.
+  #snapshot <- withr::with_libpaths(
+    #pkglibs,
+   # {
+  existing_libpaths <- .libPaths()
+  # only keep the last libpath, which should be the core library
+  assign(".lib.loc", c(pkglibs, .libPaths()[length(.libPaths())]), envir = environment(.libPaths))
+  on.exit({
+    assign(".lib.loc", existing_libpaths, envir = environment(.libPaths))
+  }, add = TRUE)
+  if (.install) {
+    remotes::install_deps(pkgdir = pkg_dir, threads = threads, dependencies = TRUE)
+  }
+  snapshot <- gen_snapshot(.d$get_deps()$package, .dir = .dir)
+   # }
+ # )
   return(list(
     snapshot = snapshot,
     pkglibpath = pkglibs
