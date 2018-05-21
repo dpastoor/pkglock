@@ -6,7 +6,8 @@
 \usage{
 gen_runtime_description(pkgs = NULL, github = NULL, bioc = NULL,
   git = NULL, url = NULL, name = NULL, email = NULL,
-  runtime = paste0("runtime", gsub("-", "", as.Date.character(Sys.Date()))))
+  runtime = paste0("runtime", gsub("-", "", as.Date.character(Sys.Date()))),
+  bootstrap = TRUE)
 }
 \arguments{
 \item{pkgs}{packages}
@@ -24,6 +25,8 @@ gen_runtime_description(pkgs = NULL, github = NULL, bioc = NULL,
 \item{email}{author email}
 
 \item{runtime}{runtime name}
+
+\item{bootstrap}{add required elements to bootstrap with packrat}
 }
 \value{
 desc file
@@ -34,4 +37,7 @@ create decription file for internal package
 \details{
 creates the desc object representation with the fields
 needed to bootstrap an internal package description
+
+bootstrapping adds devtools and packrat to imports. If refined version(s) or
+other tweaks needed set bootstrap to false, and directly set.
 }

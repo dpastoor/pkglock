@@ -4,12 +4,14 @@
 \alias{setup_runtime_template}
 \title{setup a runtime template}
 \usage{
-setup_runtime_template(.ll, .dir = fs::path_temp())
+setup_runtime_template(.ll, .dir = fs::path_temp(), ...)
 }
 \arguments{
 \item{.ll}{lockfile lines}
 
 \item{.dir}{dir to create the runtime template}
+
+\item{...}{parameters to pass to `packrat_settings()`}
 }
 \description{
 setup a runtime template

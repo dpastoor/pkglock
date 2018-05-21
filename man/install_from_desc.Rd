@@ -4,13 +4,23 @@
 \alias{install_from_desc}
 \title{install from a runtime description}
 \usage{
-install_from_desc(.d, .dir = fs::path_temp())
+install_from_desc(.d, .dir = fs::path_temp(),
+  threads = parallel::detectCores(), .install = TRUE)
 }
 \arguments{
 \item{.d}{description file}
 
 \item{.dir}{directory to install pkgs from description}
+
+\item{threads}{threads during install}
+
+\item{.install}{whether to install deps}
 }
 \description{
 install from a runtime description
+}
+\details{
+.install should almost always be set to true, the time to set to false
+is if a full install was completed, however some tweak to the snapshot
+generation needed to be re-run.
 }
