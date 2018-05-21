@@ -14,30 +14,37 @@ install_from_desc <- function(.d,
                               threads = parallel::detectCores(),
                               .install = TRUE) {
   # random folder so won't clash if installing multiple descs
-  working_dir <- fs::dir_create(file.path(.dir, "runtime_pkg"))
+  working_dir <- fs::dir_create(file.path(.dir, "pkglock_snapshot"))
   pkg_dir <- fs::dir_create(file.path(working_dir, "runtime_pkg"))
   pkglibs <- fs::dir_create(file.path(working_dir, "pkglib"))
   .d$write(file.path(pkg_dir, "DESCRIPTION")) 
-  # with_libpaths does not overwrite the site-library, hence need to be
-  # more aggresive, even if it means hard coding for the moment.
-  #snapshot <- withr::with_libpaths(
-    #pkglibs,
-   # {
-  existing_libpaths <- .libPaths()
-  # only keep the last libpath, which should be the core library
-  assign(".lib.loc", c(pkglibs, .libPaths()[length(.libPaths())]), envir = environment(.libPaths))
-  on.exit({
-    assign(".lib.loc", existing_libpaths, envir = environment(.libPaths))
-  }, add = TRUE)
-  if (.install) {
-    remotes::install_deps(pkgdir = pkg_dir, threads = threads, dependencies = TRUE)
-  }
-  snapshot <- gen_snapshot(.d$get_deps()$package, .dir = .dir)
-   # }
- # )
+ 
+  pkgs_to_snapshot <- .d$get_deps()$package
+  libs <- callr::r(function(tmppkg, .pkgdir, pkgs_to_snapshot, .install, threads) {
+    setwd(tmppkg)
+    packrat::init(options = list(snapshot.fields = c("Imports", "Depends", "Suggests", "LinkingTo")), restart = TRUE)
+    if (.install) {
+      install.packages("remotes")
+      remotes::install_deps(.pkgdir,threads = threads)
+    }
+    pkgtext <- sprintf("library(%s)", pkgs_to_snapshot)
+    writeLines(pkgtext, "packages.R")
+    snapshot <- packrat::snapshot(snapshot.sources = TRUE, 
+                                  prompt = FALSE, 
+                                  infer.dependencies = FALSE)
+    .libPaths()
+  }, show = TRUE,
+  args = list(tmppkg = pkglibs, 
+              pkgs_to_snapshot = pkgs_to_snapshot,
+              .pkgdir = pkg_dir,
+              .install = .install,
+              threads = threads
+  ))
+  
   return(list(
     snapshot = snapshot,
-    pkglibpath = pkglibs
+    pkglibpath = pkglibs,
+    libs = libs
        ))
 }
 
