@@ -44,7 +44,7 @@ withr::with_libpaths("/Users/devin/clients/amgen/pkglock/inst/installreq",
 
 ```{r}
 tmpdir <- "tmp"
-new_snap <- install_from_desc(runtime_desc, .dir = tmpdir)
+new_snap <- install_from_desc(runtime_desc, .dir = tmpdir, .install = FALSE)
 ```
 
 ```{r}
@@ -70,28 +70,24 @@ rtdir <- setup_runtime_template(new_snap$snapshot$lockfile, .dir = tmpdir)
 fs::dir_copy(new_snap$snapshot$tardir, fs::path(rtdir, "packrat"))
 # if going to do this, will need to get the full platform spec correct
 # eg x86_64-apple-darwin16.7.0/3.4.3/<libs>
-#fs::dir_copy(fs::dir_ls(new_snap$pkglibpath), fs::path(rtdir, "packrat", "lib"))
-```
+new_binary_dir <- fs::path(rtdir, 
+          "packrat", 
+          "lib", 
+          R.version$platform)
+fs::dir_create(new_binary_dir)
 
-```{r}
-setdiff(basename(fs::dir_ls(new_snap$snapshot$tardir)), basename(fs::dir_ls(new_snap$pkglibpath)))
-setdiff( basename(fs::dir_ls(new_snap$pkglibpath)), basename(fs::dir_ls(new_snap$snapshot$tardir)))
+fs::dir_copy(new_snap$pkglibpath, new_binary_dir) 
+# is there a way to copy the contents of a dir with renaming
 
-
-length(fs::dir_ls(new_snap$pkglibpath))
-```
-
-```{r}
-list.files(rtdir, recursive = TRUE, all.files = TRUE)
+file.rename(fs::path(new_binary_dir, "pkglib"), fs::path(new_binary_dir, getRversion()))
 ```
 
 ```{r}
 binary_runtime <- install_runtime(rtdir)
 ```
 
-
 ```{r}
-fs::dir_ls(binary_runtime)
+.libPaths()
 ```
 
 
