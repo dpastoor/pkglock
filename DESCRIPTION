@@ -11,6 +11,8 @@ LazyData: true
 Encoding: UTF-8
 Imports:  
     fs,
+    callr (>= 2.0.4),
+    debugme,
     withr,
     devtools,
     remotes,
