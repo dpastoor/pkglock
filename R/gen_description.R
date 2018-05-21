@@ -48,6 +48,8 @@ gen_runtime_description <- function(
   if (bootstrap) {
     d$set_dep("packrat", type = "Imports")
     d$set_dep("devtools", type = "Imports")
+    ## need callr for bootstrapping setting up and using packrat in isolated session
+    d$set_dep("callr", type = "Imports")
   }
   if (!is.null(pkgs)) {
     for (pkg in pkgs) {
