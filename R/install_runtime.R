@@ -25,14 +25,14 @@ install_from_desc <- function(.d,
     packrat::init(options = list(snapshot.fields = c("Imports", "Depends", "Suggests", "LinkingTo")), restart = TRUE)
     if (.install) {
       install.packages("remotes")
-      remotes::install_deps(.pkgdir,threads = threads)
+      remotes::install_deps(.pkgdir, threads = threads)
     }
     pkgtext <- sprintf("library(%s)", pkgs_to_snapshot)
     writeLines(pkgtext, "packages.R")
     snapshot <- packrat::snapshot(snapshot.sources = TRUE, 
                                   prompt = FALSE, 
                                   infer.dependencies = FALSE)
-    .libPaths()
+    return(.libPaths())
   }, show = TRUE,
   args = list(tmppkg = pkglibs, 
               pkgs_to_snapshot = pkgs_to_snapshot,
@@ -42,9 +42,8 @@ install_from_desc <- function(.d,
   ))
   
   return(list(
-    snapshot = snapshot,
-    pkglibpath = pkglibs,
-    libs = libs
+    packrat_lib = pkglibs,
+    rlibs = libs
        ))
 }
 
