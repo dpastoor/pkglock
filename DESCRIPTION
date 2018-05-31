@@ -9,7 +9,7 @@ Authors@R:
 Description: Lock and rehydrate packages.
 LazyData: true
 Encoding: UTF-8
-Imports:  
+Imports: 
     fs,
     callr (>= 2.0.4),
     debugme,
@@ -18,8 +18,11 @@ Imports:
     remotes,
     desc,
     magrittr,
-    packrat
+    packrat,
+    pkgdepends
 Suggests:
     testthat,
     knitr
 RoxygenNote: 6.0.1.9000
+Remotes:  
+    r-lib/pkgdepends
