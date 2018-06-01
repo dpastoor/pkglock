@@ -13,30 +13,25 @@ gen_snapshot <- function(pkgs, .dir = tempdir(), snapshot_tars = TRUE, ...) {
   if (!length(pkgs)) {
     stop("must define at least one package to snapshot")
   }
-  tmppkg <- file.path(.dir, "pkglock_gen")
-  if (!dir_exists(tmppkg)) {
-    dir_create(tmppkg, recursive = TRUE)
+  pkg_resolution <- tryCatch({
+    resolve_pkgs(pkgs)
+  }, error = function(e) {
+    e
+  })
+  if (inherits(class(pkg_resolution), "error")) {
+    stop("package resolution failed with message: ", pkg_resolution$message)
   }
   
+  rtd <- gen_runtime_description(pkgs = pkg_resolution$pkg,
+                          github = pkg_resolution$github)
+  
+  snapshot_info <- install_from_desc(rtd, .dir = .dir) 
   tardir <- if (snapshot_tars) {
     file.path(tmppkg, "packrat", "src")
   } else {
     NULL 
   } 
-  pkgtext <- sprintf("library(%s)", pkgs)
-  writeLines(pkgtext, file.path(tmppkg, "packages.R"))
-  
-  dir_create(fs::path(tmppkg, "packrat"), recursive = TRUE)
-  write_packrat_opts(packrat_settings(...), 
-                     fs::path(tmppkg, "packrat", "packrat.opts"))
-  # will eventually need to wrap this in a try block
-  # snapshot will track the metadata about what the lockfile results found
-  snapshot <- packrat::snapshot(tmppkg, snapshot.sources = snapshot_tars, prompt = FALSE)
-  
-  # packrat will have created a new dir called packrat with a packrat.lock
-  # file
-  lockfile <- readLines(file.path(tmppkg, "packrat", "packrat.lock"))
-  
+ 
   return(list(metadata = snapshot,
               lockfile = lockfile, 
               tardir = tardir))
