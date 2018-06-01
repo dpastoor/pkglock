@@ -1,3 +1,10 @@
+maybe_pkgs <- function(.pkgs) {
+  if (!length(.pkgs)) {
+    return(NULL)
+  }
+  return(.pkgs)
+}
+
 #' Wrapper function to help generate a packrat lockfile
 #'
 #' @param ...      the arguments to pass to gen_runtime_description
