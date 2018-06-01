@@ -2,8 +2,8 @@
 #' install from a runtime description
 #' @param .d description file
 #' @param .dir directory to install pkgs from description
+#' @param snapshot_sources snapshot the library source tarballs
 #' @param threads threads during install 
-#' @param .install whether to install deps
 #' @details 
 #' .install should almost always be set to true, the time to set to false
 #' is if a full install was completed, however some tweak to the snapshot
@@ -11,39 +11,39 @@
 #' @export
 install_from_desc <- function(.d, 
                               .dir = fs::path_temp(), 
-                              threads = parallel::detectCores(),
-                              .install = TRUE) {
-  # random folder so won't clash if installing multiple descs
+                              snapshot_sources = TRUE,
+                              threads = parallel::detectCores()
+                              ) {
   working_dir <- fs::dir_create(file.path(.dir, "pkglock_snapshot"))
   pkg_dir <- fs::dir_create(file.path(working_dir, "runtime_pkg"))
   pkglibs <- fs::dir_create(file.path(working_dir, "pkglib"))
   .d$write(file.path(pkg_dir, "DESCRIPTION")) 
  
   pkgs_to_snapshot <- .d$get_deps()$package
-  libs <- callr::r(function(tmppkg, .pkgdir, pkgs_to_snapshot, .install, threads) {
+  libs <- callr::r(function(tmppkg, .pkgdir, pkgs_to_snapshot, snapshot_sources, threads) {
     setwd(tmppkg)
     packrat::init(options = list(snapshot.fields = c("Imports", "Depends", "Suggests", "LinkingTo")), restart = TRUE)
-    if (.install) {
-      install.packages("remotes")
-      remotes::install_deps(.pkgdir, threads = threads)
-    }
+    
+    install.packages("remotes")
+    remotes::install_deps(.pkgdir, threads = threads)
     pkgtext <- sprintf("library(%s)", pkgs_to_snapshot)
     writeLines(pkgtext, "packages.R")
-    snapshot <- packrat::snapshot(snapshot.sources = TRUE, 
+    snapshot <- packrat::snapshot(snapshot.sources = snapshot_sources, 
                                   prompt = FALSE, 
                                   infer.dependencies = FALSE)
     return(.libPaths())
   }, show = TRUE,
-  args = list(tmppkg = pkglibs, 
-              pkgs_to_snapshot = pkgs_to_snapshot,
-              .pkgdir = pkg_dir,
-              .install = .install,
-              threads = threads
+  args = list(
+    tmppkg = pkglibs,
+    pkgs_to_snapshot = pkgs_to_snapshot,
+    .pkgdir = normalizePath(pkg_dir),
+    snapshot_sources = snapshot_sources,
+    threads = threads
   ))
   
   return(list(
-    packrat_lib = pkglibs,
-    rlibs = libs
+    working_dir = normalizePath(working_dir),
+    pkg_dir = normalizePath(pkg_dir)
        ))
 }
 
