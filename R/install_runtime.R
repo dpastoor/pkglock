@@ -43,8 +43,9 @@ install_from_desc <- function(.d,
   
   return(list(
     working_dir = normalizePath(working_dir),
-    pkg_dir = normalizePath(pkg_dir)
-       ))
+    pkg_dir = normalizePath(pkg_dir),
+    pkg_libs = normalizePath(pkglibs)
+  ))
 }
 
 #' setup a runtime template
