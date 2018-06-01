@@ -26,13 +26,6 @@ gen_snapshot <- function(pkgs, .dir = tempdir(), snapshot_tars = TRUE, ...) {
                           github = pkg_resolution$github)
   
   snapshot_info <- install_from_desc(rtd, .dir = .dir) 
-  tardir <- if (snapshot_tars) {
-    file.path(tmppkg, "packrat", "src")
-  } else {
-    NULL 
-  } 
  
-  return(list(metadata = snapshot,
-              lockfile = lockfile, 
-              tardir = tardir))
+  return(snapshot_info)
 }
