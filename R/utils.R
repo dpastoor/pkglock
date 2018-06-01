@@ -1,3 +1,6 @@
+# returned package lists from the resolution will be either a vector 
+# or character(0), however description logic is checking for NULL, 
+# so this converts character(0) to null
 maybe_pkgs <- function(.pkgs) {
   if (!length(.pkgs)) {
     return(NULL)
