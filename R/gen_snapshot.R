@@ -23,7 +23,7 @@ gen_snapshot <- function(pkgs, .dir = tempdir(), snapshot_tars = TRUE, ...) {
   }
   
   rtd <- gen_runtime_description(pkgs = pkg_resolution$pkg,
-                          github = pkg_resolution$github)
+                          github = maybe_pkgs(pkg_resolution$github))
   
   snapshot_info <- install_from_desc(rtd, .dir = .dir) 
  
