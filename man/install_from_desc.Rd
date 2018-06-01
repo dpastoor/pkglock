@@ -4,17 +4,17 @@
 \alias{install_from_desc}
 \title{install from a runtime description}
 \usage{
-install_from_desc(.d, .dir = fs::path_temp(),
-  threads = parallel::detectCores(), .install = TRUE)
+install_from_desc(.d, .dir = fs::path_temp(), snapshot_sources = TRUE,
+  threads = parallel::detectCores())
 }
 \arguments{
 \item{.d}{description file}
 
 \item{.dir}{directory to install pkgs from description}
 
-\item{threads}{threads during install}
+\item{snapshot_sources}{snapshot the library source tarballs}
 
-\item{.install}{whether to install deps}
+\item{threads}{threads during install}
 }
 \description{
 install from a runtime description
