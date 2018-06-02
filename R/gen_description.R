@@ -7,7 +7,6 @@
 #' @param name name
 #' @param email author email
 #' @param runtime runtime name
-#' @param bootstrap add required elements to bootstrap with packrat
 #' @return desc file
 #' @importFrom utils as.person
 #' @details
@@ -25,8 +24,7 @@ gen_runtime_description <- function(
   url = NULL,
   name = NULL,
   email = NULL,
-  runtime = paste0("runtime", gsub("-", "", as.Date.character(Sys.Date()))),
-  bootstrap = TRUE
+  runtime = paste0("runtime", gsub("-", "", as.Date.character(Sys.Date())))
 ) {
   d <- desc::description$new("!new")
   d$set(Title = "runtime generator")
@@ -45,12 +43,6 @@ gen_runtime_description <- function(
     d$set_authors(author)
   }
  
-  if (bootstrap) {
-    d$set_dep("packrat", type = "Imports")
-    d$set_dep("devtools", type = "Imports")
-    ## need callr for bootstrapping setting up and using packrat in isolated session
-    d$set_dep("callr", type = "Imports")
-  }
   if (!is.null(pkgs)) {
     for (pkg in pkgs) {
       d$set_dep(pkg, type = "Imports")
