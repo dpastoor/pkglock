@@ -19,7 +19,7 @@ Imports:
     desc,
     magrittr,
     packrat,
-    pkgdepends
+    pkgdepends (>= 0.0.9002)
 Suggests:
     testthat,
     knitr
