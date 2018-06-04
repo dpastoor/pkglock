@@ -4,6 +4,7 @@
 #' @param .dir directory to install pkgs from description
 #' @param snapshot_sources snapshot the library source tarballs
 #' @param threads threads during install 
+#' @param repos repositories to check for available packages
 #' @details 
 #' .install should almost always be set to true, the time to set to false
 #' is if a full install was completed, however some tweak to the snapshot
@@ -12,7 +13,8 @@
 install_from_desc <- function(.d, 
                               .dir = fs::path_temp(), 
                               snapshot_sources = TRUE,
-                              threads = parallel::detectCores()
+                              threads = parallel::detectCores(),
+                              repos = getOption("repos")
                               ) {
   working_dir <- fs::dir_create(file.path(.dir, "pkglock_snapshot"))
   pkg_dir <- fs::dir_create(file.path(working_dir, "runtime_pkg"))
@@ -20,7 +22,7 @@ install_from_desc <- function(.d,
   .d$write(file.path(pkg_dir, "DESCRIPTION")) 
  
   pkgs_to_snapshot <- .d$get_deps()$package
-  libs <- callr::r(function(tmppkg, .pkgdir, pkgs_to_snapshot, snapshot_sources, threads) {
+  callr::r(function(tmppkg, .pkgdir, pkgs_to_snapshot, snapshot_sources, threads) {
     setwd(tmppkg)
     packrat::init(options = list(snapshot.fields = c("Imports", "Depends", "Suggests", "LinkingTo")), restart = TRUE)
     
@@ -39,7 +41,7 @@ install_from_desc <- function(.d,
     .pkgdir = normalizePath(pkg_dir),
     snapshot_sources = snapshot_sources,
     threads = threads
-  ))
+  ), repos = repos)
   
   return(list(
     working_dir = normalizePath(working_dir),
