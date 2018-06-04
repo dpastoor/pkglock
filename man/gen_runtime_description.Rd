@@ -6,8 +6,7 @@
 \usage{
 gen_runtime_description(pkgs = NULL, github = NULL, bioc = NULL,
   git = NULL, url = NULL, name = NULL, email = NULL,
-  runtime = paste0("runtime", gsub("-", "", as.Date.character(Sys.Date()))),
-  bootstrap = TRUE)
+  runtime = paste0("runtime", gsub("-", "", as.Date.character(Sys.Date()))))
 }
 \arguments{
 \item{pkgs}{packages}
@@ -25,8 +24,6 @@ gen_runtime_description(pkgs = NULL, github = NULL, bioc = NULL,
 \item{email}{author email}
 
 \item{runtime}{runtime name}
-
-\item{bootstrap}{add required elements to bootstrap with packrat}
 }
 \value{
 desc file

@@ -5,7 +5,7 @@
 \title{install from a runtime description}
 \usage{
 install_from_desc(.d, .dir = fs::path_temp(), snapshot_sources = TRUE,
-  threads = parallel::detectCores())
+  threads = parallel::detectCores(), repos = getOption("repos"))
 }
 \arguments{
 \item{.d}{description file}
@@ -15,6 +15,8 @@ install_from_desc(.d, .dir = fs::path_temp(), snapshot_sources = TRUE,
 \item{snapshot_sources}{snapshot the library source tarballs}
 
 \item{threads}{threads during install}
+
+\item{repos}{repositories to check for available packages}
 }
 \description{
 install from a runtime description
