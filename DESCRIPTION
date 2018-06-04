@@ -1,6 +1,6 @@
 Package: pkglock
 Title: lock and rehydrate package runtimes
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Devin",
            family = "Pastoor",
@@ -19,7 +19,7 @@ Imports:
     desc,
     magrittr,
     packrat,
-    pkgdepends (>= 0.0.9002)
+    pkgdepends (>= 0.0.0.9002)
 Suggests:
     testthat,
     knitr
