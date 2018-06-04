@@ -1,5 +1,9 @@
-
-
+library(pkglock)
+local({r <- getOption("repos")
+r["CRAN"] <- "https://cran.rstudio.com/" 
+options(repos=r)
+})
+available.packages()
 
 pkgs <- c(
   "PKPDmisc",
@@ -59,11 +63,11 @@ pkgs <- c(
   "rlang",
   "furrr",
   "knitr",
-  "dbplyr"
+  "DBI"
 )
 
-install_dir <- "inst/tmp"
-if (fs::dir_exists(install_dir) && length(fs::dir_ls(install_dir))) {
-  stop("files/folders present in dir: ", install_dir, " aborting attempt...") 
-}
+install_dir <- "tmp"
+#if (!fs::dir_exists(install_dir) || length(fs::dir_ls(install_dir))) {
+#  stop("dir missing or files/folders present in dir: ", install_dir, " aborting attempt...") 
+#}
 res <- gen_snapshot(pkgs, .dir = install_dir)
