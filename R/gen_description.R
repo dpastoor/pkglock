@@ -12,6 +12,9 @@
 #' @details
 #' creates the desc object representation with the fields
 #' needed to bootstrap an internal package description
+#' 
+#' bootstrapping adds devtools and packrat to imports. If refined version(s) or
+#' other tweaks needed set bootstrap to false, and directly set.
 #' @export
 gen_runtime_description <- function(
   pkgs = NULL,
@@ -39,7 +42,7 @@ gen_runtime_description <- function(
                             role = c("aut", "cre"))
     d$set_authors(author)
   }
-  
+ 
   if (!is.null(pkgs)) {
     for (pkg in pkgs) {
       d$set_dep(pkg, type = "Imports")

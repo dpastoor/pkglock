@@ -3,7 +3,7 @@ title: "scratch"
 output: html_document
 ---
 
-```{r}
+```{r eval = FALSE}
 gen_runtime_description(
   c("dplyr", 
     "sparklyr (>= 0.7.0-9020)", 
@@ -12,12 +12,16 @@ gen_runtime_description(
 )
 ```
 
+```{r}
+library(pkglock)
+```
+
 
 ```{r}
-pkgs <- c("R6", "pillar (>= 1.2.1)")
+pkgs <- c("dplyr", "ggplot2 (>= 2.2.1.9000)", "purrr", "PKPDmisc")
 runtime_desc <- gen_runtime_description(
   pkgs,
-  github = c("r-lib/pillar"),
+  github = c("tidyverse/ggplot2"),
   name = "Devin Pastoor",
   email = "devin.pastoor@gmail.com"
 )
@@ -39,23 +43,51 @@ withr::with_libpaths("/Users/devin/clients/amgen/pkglock/inst/installreq",
 ## using package functions
 
 ```{r}
-tmpdir <- fs::path_temp()
-new_snap <- install_from_desc(runtime_desc, .dir = tmpdir)
+tmpdir <- "tmp"
+new_snap <- install_from_desc(runtime_desc, .dir = tmpdir, .install = FALSE)
+```
 
+```{r}
+new_snap$pkglibpath
+```
+
+```{r}
+new_snap$snapshot$tardir
+```
+
+
+here should probably copy both the binaries (optimization) and the tarballs
+(req) into the new runtime template. The binaries may be in other libs
+on the system.
+
+```{r}
 rtdir <- setup_runtime_template(new_snap$snapshot$lockfile, .dir = tmpdir)
 ```
 
 ```{r}
-list.files(rtdir, recursive = TRUE, all.files = TRUE)
+## copy over tars + binaries at least in the libpath
+
+fs::dir_copy(new_snap$snapshot$tardir, fs::path(rtdir, "packrat"))
+# if going to do this, will need to get the full platform spec correct
+# eg x86_64-apple-darwin16.7.0/3.4.3/<libs>
+new_binary_dir <- fs::path(rtdir, 
+          "packrat", 
+          "lib", 
+          R.version$platform)
+fs::dir_create(new_binary_dir)
+
+fs::dir_copy(new_snap$pkglibpath, new_binary_dir) 
+# is there a way to copy the contents of a dir with renaming
+
+file.rename(fs::path(new_binary_dir, "pkglib"), fs::path(new_binary_dir, getRversion()))
 ```
 
 ```{r}
-binary_runtime <- install_runtime(rtdir, "/Users/devin/clients/amgen/pkglock/inst/installreq")
+binary_runtime <- install_runtime(rtdir)
 ```
 
-
 ```{r}
-fs::dir_ls(binary_runtime)
+.libPaths()
 ```
 
 

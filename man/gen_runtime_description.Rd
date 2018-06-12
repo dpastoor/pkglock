@@ -34,4 +34,7 @@ create decription file for internal package
 \details{
 creates the desc object representation with the fields
 needed to bootstrap an internal package description
+
+bootstrapping adds devtools and packrat to imports. If refined version(s) or
+other tweaks needed set bootstrap to false, and directly set.
 }
