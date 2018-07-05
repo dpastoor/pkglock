@@ -25,21 +25,23 @@ install_from_desc <- function(.d,
     setwd(tmppkg)
     packrat::init(options = list(snapshot.fields = c("Imports", "Depends", "Suggests", "LinkingTo")), restart = TRUE)
     # packages needed to do devtools install
-    libs <- c("jsonlite", 
+    libs <- c(
+      "desc",
+      "usethis", ## needed to avoid weird bug in dev version of devtools not loading via extlib
+              "jsonlite", 
               "withr", 
               "devtools", 
               "httr", 
               "curl", 
               "git2r", 
-              "desc", 
               "pkgbuild",
               "pkgload")
     message("using ext libs: ", paste0(libs, collapse = ", "))
     packrat::extlib(libs)
-    if (!requireNamespace("devtools")) {
-      warning("devtools not installed on the host system...installing, this could take longer to snapshot...")
-      install.packages("devtools")
-    }
+    # if (!requireNamespace("devtools")) {
+    #   warning("devtools not installed on the host system...installing, this could take longer to snapshot...")
+    #   install.packages("devtools")
+    # }
     devtools::install_deps(.pkgdir, threads = threads, force_deps = TRUE)
     pkgtext <- sprintf("library(%s)", pkgs_to_snapshot)
     writeLines(pkgtext, "packages.R")
