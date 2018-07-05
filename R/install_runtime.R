@@ -32,7 +32,8 @@ install_from_desc <- function(.d,
               "curl", 
               "git2r", 
               "desc", 
-              "pkgbuild")
+              "pkgbuild",
+              "pkgload")
     packrat::extlib(libs)
     if (!requireNamespace("devtools")) {
       warning("devtools not installed on the host system...installing, this could take longer to snapshot...")
