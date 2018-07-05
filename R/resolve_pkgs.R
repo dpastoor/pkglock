@@ -32,9 +32,9 @@ resolve_pkgs <- function(top_pkgs) {
                                      is.na(all_pkg_data$priority), , drop = FALSE]
   
   pkgs <- with(top_lvl_pkg_meta, {
-    pkgname <- package[tolower(type) == "standard"]
-    pkgversion <- version[tolower(type) == "standard"]
-    sprintf("%s (>= %s)", pkgname, pkgversion)
+    # pkgname <- package
+    # pkgversion <- version
+    sprintf("%s (>= %s)", package, version)
   })
   gh_pkgs <- with(top_lvl_pkg_meta, {
     ref[tolower(type) == "github"]
