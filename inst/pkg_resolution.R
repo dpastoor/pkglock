@@ -66,6 +66,7 @@ pkgs <- c(
   "DBI"
 )
 
+pkgs <- c("R6", "r-lib/pillar")
 install_dir <- "tmp"
 #if (!fs::dir_exists(install_dir) || length(fs::dir_ls(install_dir))) {
 #  stop("dir missing or files/folders present in dir: ", install_dir, " aborting attempt...") 

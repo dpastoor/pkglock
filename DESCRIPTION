@@ -1,6 +1,6 @@
 Package: pkglock
 Title: lock and rehydrate package runtimes
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: 
     person(given = "Devin",
            family = "Pastoor",
