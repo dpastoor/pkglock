@@ -34,6 +34,7 @@ install_from_desc <- function(.d,
               "desc", 
               "pkgbuild",
               "pkgload")
+    message("using ext libs: ", paste0(libs, collapse = ", "))
     packrat::extlib(libs)
     if (!requireNamespace("devtools")) {
       warning("devtools not installed on the host system...installing, this could take longer to snapshot...")
