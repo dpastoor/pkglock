@@ -24,12 +24,21 @@ install_from_desc <- function(.d,
   callr::r(function(tmppkg, .pkgdir, pkgs_to_snapshot, snapshot_sources, threads) {
     setwd(tmppkg)
     packrat::init(options = list(snapshot.fields = c("Imports", "Depends", "Suggests", "LinkingTo")), restart = TRUE)
-    packrat::extlib("devtools") 
+    # packages needed to do devtools install
+    libs <- c("jsonlite", 
+              "withr", 
+              "devtools", 
+              "httr", 
+              "curl", 
+              "git2r", 
+              "desc", 
+              "pkgbuild")
+    packrat::extlib(libs)
     if (!requireNamespace("devtools")) {
       warning("devtools not installed on the host system...installing, this could take longer to snapshot...")
       install.packages("devtools")
     }
-    devtools::install_deps(.pkgdir, threads = threads)
+    devtools::install_deps(.pkgdir, threads = threads, force_deps = TRUE)
     pkgtext <- sprintf("library(%s)", pkgs_to_snapshot)
     writeLines(pkgtext, "packages.R")
     snapshot <- packrat::snapshot(snapshot.sources = snapshot_sources, 
